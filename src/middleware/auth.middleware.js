@@ -1,28 +1,23 @@
-import jwt from 'jsonwebtoken'
-import {db} from '../libs/db.js'
+import jwt from 'jsonwebtoken';
+import { db } from '../libs/db.js';
 
-export const authMiddleware = async (req, res, next) =>{
+export const authMiddleware = async (req, res, next) => {
     try {
-        const token = req.cookies.jwt;
-        if(!token){
-            return res.status(401).json({
-                message: "Unthauthorized - No token provided"
-            })
+        const token = req.cookies?.jwt;
+
+        if (!token) {
+            return res.status(401).json({ message: "Unauthorized - No token provided" });
         }
 
         let decoded;
         try {
             decoded = jwt.verify(token, process.env.JWT_SECRET);
-        } catch (error) {
-            return res.status(401).json({
-                message: "Unauthorized - invalid token"
-            })
+        } catch (err) {
+            return res.status(401).json({ message: "Unauthorized - Invalid token" });
         }
 
         const user = await db.user.findUnique({
-            where: {
-                id: decoded.id
-            },
+            where: { id: decoded.id },
             select: {
                 id: true,
                 image: true,
@@ -32,16 +27,15 @@ export const authMiddleware = async (req, res, next) =>{
             }
         });
 
-        if(!user){
-            return res.status(404).json({
-                message: "User not found"
-            })
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
         }
-        
-        res.user = user;
-        next()
+
+        req.user = user; // fixed from res.user
+        next();
+
     } catch (error) {
-        console.error("Error authenticating user:", error);
-        res.status(500).json({message: "Error authenticating user"})
+        console.error("Authentication error:", error);
+        res.status(500).json({ message: "Internal server error during authentication" });
     }
-}
+};
