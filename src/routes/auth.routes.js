@@ -7,7 +7,7 @@ authRoutes.post("/register", register)
 
 authRoutes.post("/login", login)
 
-authRoutes.post("/logoiut", logout)
+authRoutes.post("/logout", logout)
 
 authRoutes.get("/check", check)
 
