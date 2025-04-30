@@ -7,6 +7,7 @@ export const getJudge0LanguageId = (Language) => {
     return languageMap[Language.toUpperCase()]
 }
 
+const sleep  = (ms)=> new Promise((resolve)=> setTimeout(resolve , ms))
 
 export const pollBatchResults = async (tokens)=>{
     while(true){
