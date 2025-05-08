@@ -1,5 +1,5 @@
 import { db } from "../libs/db.js";
-import { pollBatchResults } from "../libs/Judge0.lib.js";
+import { pollBatchResults, submitBatch, getJudge0LanguageId } from "../libs/Judge0.lib.js";
 
 export const createProblem = async (req, res) => {
     const {
@@ -12,23 +12,19 @@ export const createProblem = async (req, res) => {
     testcases,
     codeSnippets,
     referenceSolutions,
-    } = req.body;
+} = req.body;
 
-    if (req.body.role !== "ADMIN") {
-    return res
-        .status(403)
-        .json({ error: "You are not allowed to create a problem" });
-    }
+  // going to check the user role once again
 
-    try {
+try {
     for (const [language, solutionCode] of Object.entries(referenceSolutions)) {
-        const languageId = getJudge0LanguageId(language);
+    const languageId = getJudge0LanguageId(language);
 
-        if (!languageId) {
+    if (!languageId) {
         return res
-            .status(400)
-            .json({ error: `Language ${language} is not supported` });
-        }
+        .status(400)
+        .json({ error: `Language ${language} is not supported` });
+    }
 
       //
         const submissions = testcases.map(({ input, output }) => ({
@@ -78,13 +74,14 @@ export const createProblem = async (req, res) => {
         message: "Message Created Successfully",
         problem: newProblem,
     });
-} catch (error) {
+    } catch (error) {
     console.log(error);
     return res.status(500).json({
         error: "Error While Creating Problem",
     });
     }
 };
+
 export const getAllProblems = async (req, res) => {};
 export const getAllProblemById = async (req, res) => {};
 export const updateProblem = async (req, res) => {};
