@@ -42,7 +42,7 @@ try {
 
         for (let i = 0; i < results.length; i++) {
         const result = results[i];
-        console.log("Result-----", result);
+        // console.log("Result-----", result);
         // console.log(
         //   `Testcase ${i + 1} and Language ${language} ----- result ${JSON.stringify(result.status.description)}`
         // );
@@ -82,7 +82,26 @@ try {
     }
 };
 
-export const getAllProblems = async (req, res) => {};
+export const getAllProblems = async (req, res) => {
+    try {
+        const problems = await db.problem.findMany();
+        if(!problems){
+            return res.status(404).json({
+                error: "No problem found"
+            })
+        }
+        res.status(200).json({
+            sucess: true,
+            message: "Message Fetched Successfully",
+            problems
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            error: "Error while creating problems"
+        })
+    }
+};
 export const getAllProblemById = async (req, res) => {};
 export const updateProblem = async (req, res) => {};
 export const deleteProblem = async (req, res) => {};
