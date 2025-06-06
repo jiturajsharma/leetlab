@@ -3,6 +3,8 @@ import dotenv from 'dotenv'
 import authRoutes from './routes/auth.routes.js'
 import cookieParser from 'cookie-parser'
 import problemRoutes from './routes/problem.routes.js'
+import executionRoute from './routes/executeCode.routes.js'
+
 
 dotenv.config()
 
@@ -16,6 +18,7 @@ app.get("/", (req, res) =>{
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/problems" , problemRoutes);
+app.use("/api/v1/execute-code" , executionRoute);
 
 
 app.listen(process.env.PORT, () => {
